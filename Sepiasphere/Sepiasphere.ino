@@ -15,20 +15,21 @@
 
 
 // Constants
-#define MAXPRGS 12  // Maximum available programs
-
-
-// Variables
-bool outLeft = true;    // Is left output selected?
-bool outRight = false;  // Is right output selected?
+#define IN_STEP_SWITCH  {A0, A1, A2, A3, A4, A5, A6, 2, 3, 4, 5, 6} // Step switch input pins
+#define MAXPRGS sizeof(IN_STEP_SWITCH)  // Maximum available programs
+#define IN_POTI A7  // Analog input of potentiometer
+#define IN_1    9   // Input/LED ring 1 active?
+#define IN_2    10  // Input/LED ring 2 active?
+#define OUT_1   7   // Output LED ring 1
+#define OUT_2   8   // Output LED ring 2
 
 
 // Configuration
 // https://playground.arduino.cc/Code/EEPROMLoadAndSaveSettings
 
 // Constants
-#define CONFIG_OFFSET 32        // EEPROM configuration offset
-#define CONFIG_VERSION "v01"    // EEPROM versoin check/magic number
+#define CONFIG_OFFSET   32      // EEPROM configuration offset
+#define CONFIG_VERSION  "v01"   // EEPROM versoin check/magic number
 
 // Config data type
 struct Config {
@@ -57,6 +58,8 @@ void loadConfig(struct Config *conf) {
         conf->out1pwm = 512;
         conf->out2prg = 0;
         conf->out2pwm = 512;
+        // And save them
+        saveConfig(conf);
     }
     // Check configuration
     if ( conf->out1prg < 0 || conf->out1prg > MAXPRGS ) {
@@ -76,7 +79,7 @@ void loadConfig(struct Config *conf) {
 // Save confuration
 void saveConfig(struct Config *conf) {
     for (unsigned int i=0; i<sizeof(conf); i++) {
-        // TODO UMaybe use EEPROM.put()
+        // TODO Maybe use EEPROM.put()
         EEPROM.update(CONFIG_OFFSET + i, *((char*)&conf + i));
     }
 }
@@ -84,29 +87,22 @@ void saveConfig(struct Config *conf) {
 
 // Setup routine
 void setup() {
-    // Serial
-    // TODO Do we need a serial connection, e.g. for debugging?
-    //Serial.begin(9600);
-
     // Read data from EEPROM
     Config conf;
     loadConfig(&conf);
 
     // I/O
     // Step switch
-    int inputs[] = {A0, A1, A2, A3, A4, A5, A6, 2, 3, 4, 5, 6};
-    size_t size = sizeof(inputs) / sizeof(inputs[0]);
-    for (unsigned int i = 0; i < size; i++) {
-        pinMode(inputs[i], INPUT_PULLUP);
+    for (unsigned int i = 0; i < MAXPRGS; i++) {
+        pinMode(IN_STEP_SWITCH[i], INPUT_PULLUP);
     }
 
     // Potentiometer
-    pinMode(A7, INPUT);
+    pinMode(IN_POTI, INPUT);
 
-    // Left/Both/Right selection
-    // TODO Implement
-    //pinMode(AX, INPUT);
-    //pinMode(AY, INPUt);
+    // Input (1/2/Both)
+    pinMode(IN_1, INPUT_PULLUP);
+    pinMode(IN_2, INPUt_PULLUP);
 
     // Define outputs
     pinMode(7, OUTPUT);
