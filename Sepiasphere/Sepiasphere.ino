@@ -15,21 +15,21 @@
 
 
 // Constants
-#define IN_STEP_SWITCH  {A0, A1, A2, A3, A4, A5, A6, 2, 3, 4, 5, 6} // Step switch input pins
-#define MAXPRGS sizeof(IN_STEP_SWITCH)  // Maximum available programs
-#define IN_POTI A7  // Analog input of potentiometer
-#define IN_1    9   // Input/LED ring 1 active?
-#define IN_2    10  // Input/LED ring 2 active?
-#define OUT_1   7   // Output LED ring 1
-#define OUT_2   8   // Output LED ring 2
+static const unsigned int IN_STEP_SWITCH[] = {A0, A1, A2, A3, A4, A5, A6, 2, 3, 4, 5, 6};   // Step switch input pins
+static const unsigned int MAXPRGS = sizeof(IN_STEP_SWITCH); // Maximum available programs
+static const unsigned int IN_POTI = A7; // Analog input of potentiometer
+static const unsigned int IN_1 = 9;     // Input/LED ring 1 active?
+static const unsigned int IN_2 = 10;    // Input/LED ring 2 active?
+static const unsigned int OUT_1 = 7;    // Output LED ring 1
+static const unsigned int OUT_2 = 8;    // Output LED ring 2
 
 
 // Configuration
 // https://playground.arduino.cc/Code/EEPROMLoadAndSaveSettings
 
 // Constants
-#define CONFIG_OFFSET   32      // EEPROM configuration offset
-#define CONFIG_VERSION  "v01"   // EEPROM versoin check/magic number
+static const unsigned int CONFIG_OFFSET = 32;       // EEPROM configuration offset
+static const unsigned char CONFIG_VERSION[] = "v01";// EEPROM versoin check/magic number
 
 // Config data type
 struct Config {
@@ -100,13 +100,13 @@ void setup() {
     // Potentiometer
     pinMode(IN_POTI, INPUT);
 
-    // Input (1/2/Both)
+    // Input (1/2/both)
     pinMode(IN_1, INPUT_PULLUP);
-    pinMode(IN_2, INPUt_PULLUP);
+    pinMode(IN_2, INPUT_PULLUP);
 
     // Define outputs
-    pinMode(7, OUTPUT);
-    pinMode(8, OUTPUT);
+    pinMode(OUT_1, OUTPUT);
+    pinMode(OUT_2, OUTPUT);
 
     // Initialize LED rings
     // TODO Implement
@@ -116,9 +116,8 @@ void setup() {
 
 // Main loop
 void loop() {
-    // TODO Implement everything here
-
-    // Read output switch (left/both/right)
+    // Read output switch (1/2/both)
+    
 
     // Read Step Switch
 
